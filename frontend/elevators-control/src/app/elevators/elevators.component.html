@@ -1,0 +1,28 @@
+<p>Elevators</p>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Current Floor</th>
+            <th>Destination Floor</th>
+            <th>Is Moving Up</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let elevator of elevators">
+            <td>{{ elevator.id }}</td>
+            <td>{{ elevator.currentFloor }}</td>
+            <td>{{ elevator.destinationFloor }}</td>
+            <td>{{ elevator.isMovingUp }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form #callElevatorForm="ngForm" (ngSubmit)="callElevator(callElevatorForm.value.elevatorId, callElevatorForm.value.floor)">
+    <h3>Call Elevator</h3>
+    <label for="elevatorId">Elevator ID:</label>
+    <input type="number" id="elevatorId" name="elevatorId" ngModel required>
+    <br>
+
+</form>
+

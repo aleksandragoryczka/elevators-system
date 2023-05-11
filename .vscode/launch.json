@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ElevatorsApplication<elevators>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.elevators.elevators.ElevatorsApplication",
+            "projectName": "elevators",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
