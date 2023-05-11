@@ -13,11 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
 @CrossOrigin(origins = "http://localhost:4200")
+@RestController
 @RequestMapping("api/elevators")
 public class ElevatorController {
-    private ElevatorService elevatorService = new ElevatorServiceImpl();
+    private ElevatorService elevatorService;
+
+    public ElevatorController(ElevatorService elevatorService) {
+        this.elevatorService = elevatorService;
+    }
 
     @GetMapping("")
     public List<Elevator> getAllElevators() {
@@ -36,17 +40,17 @@ public class ElevatorController {
 
     @PutMapping("/{id}")
     public void updateElevatorState(@PathVariable int id, @RequestBody Elevator elevator) {
-        elevatorService.updaeElevatorState(id, elevator.getCurrentFloor(), elevator.getDestinationFloor(),
+        elevatorService.updateElevatorState(id, elevator.getCurrentFloor(), elevator.getDestinationFloor(),
                 elevator.isMovingUp());
     }
 
     @PostMapping("/simulate")
-    public void perormSimulationStep() {
+    public void performSimulationStep() {
         elevatorService.performSimulationStep();
     }
 
     @GetMapping("/status")
-    public Map<Integer, Integer> getElevatorStatus() {
+    public List<ElevatorStatus> getElevatorStatus() {
         return elevatorService.getElevatorStatus();
     }
 }

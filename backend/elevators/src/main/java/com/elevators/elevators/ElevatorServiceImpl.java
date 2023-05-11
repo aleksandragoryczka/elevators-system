@@ -2,6 +2,7 @@ package com.elevators.elevators;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,11 +12,11 @@ import org.springframework.stereotype.Service;
 public class ElevatorServiceImpl implements ElevatorService {
     private List<Elevator> elevators;
     private boolean scanDirection = true; // kierunek ruchu algorytmu SCAN - to be changed
-    private final int ELEVATORS_NUM = 16;
+    private final int ELEVATORS_NUM = 4;
 
     public ElevatorServiceImpl() {
         this.elevators = new ArrayList<>();
-        for (int i = 1; i < ELEVATORS_NUM; i++) {
+        for (int i = 1; i < ELEVATORS_NUM + 1; i++) {
             this.elevators.add(new Elevator(i, 1, 1, true));
         }
     }
@@ -47,7 +48,7 @@ public class ElevatorServiceImpl implements ElevatorService {
     }
 
     @Override
-    public void updaeElevatorState(int elevatorId, int currentFloor, int destinationFloor, boolean isMovingUp) {
+    public void updateElevatorState(int elevatorId, int currentFloor, int destinationFloor, boolean isMovingUp) {
         Elevator elevator = getElevatorById(elevatorId);
         elevator.setCurrentFloor(currentFloor);
         elevator.setDestinationFloor(destinationFloor);
@@ -56,13 +57,17 @@ public class ElevatorServiceImpl implements ElevatorService {
 
     @Override
     public void performSimulationStep() {
+        // this.callElevator(9, 5);
         for (Elevator elevator : elevators) {
+            System.out.println("current: " + elevator.getCurrentFloor() + "winda: " + elevator.getId());
             if (elevator.getCurrentFloor() == elevator.getDestinationFloor()) {
-                return; // widna jest juz na pietrze docelowym
+                System.out.println("jest na pietre docelowym");
+                continue;
+                // widna jest juz na pietrze docelowym
             }
             int direction = elevator.isMovingUp() ? 1 : -1; // esli winda jedzie do gory -> direciton = 1; jesli na dol:
                                                             // direction = -1
-            int nextFloor = elevator.getDestinationFloor() + direction;
+            int nextFloor = elevator.getCurrentFloor() + direction;
             if (nextFloor == elevator.getDestinationFloor()) {
                 // winda dotarla do pietra docelowego
                 elevator.setCurrentFloor(nextFloor);
@@ -70,7 +75,7 @@ public class ElevatorServiceImpl implements ElevatorService {
                 // winda jest wlasnie w ruchu
                 elevator.setCurrentFloor(nextFloor);
                 // zmiana kierunku ruchu SCAN
-                if (nextFloor == 16 && scanDirection) {
+                if (nextFloor == 10 && scanDirection) { // todo: user podaje liczbe pieter
                     elevator.setMovingUp(false);
                     scanDirection = false;
                 } else if (nextFloor == 1 && !scanDirection) {
@@ -82,10 +87,11 @@ public class ElevatorServiceImpl implements ElevatorService {
     }
 
     @Override
-    public Map<Integer, Integer> getElevatorStatus() {
-        Map<Integer, Integer> status = new HashMap<>();
+    public List<ElevatorStatus> getElevatorStatus() {
+        List<ElevatorStatus> status = new ArrayList<>();
         for (Elevator elevator : elevators) {
-            status.put(elevator.getCurrentFloor(), elevator.getDestinationFloor());
+            status.add(new ElevatorStatus(elevator.getId(), elevator.getCurrentFloor(),
+                    elevator.getDestinationFloor()));
         }
         return status;
     }

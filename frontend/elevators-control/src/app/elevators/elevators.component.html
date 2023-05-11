@@ -23,6 +23,28 @@
     <label for="elevatorId">Elevator ID:</label>
     <input type="number" id="elevatorId" name="elevatorId" ngModel required>
     <br>
-
+    <label for="floor">Floor:</label>
+    <input type="number" id="floor" name="floor" ngModel required>
+    <br>
+    <button type="submit">Call elevator</button>
 </form>
+<form #upDateElevatorForm="ngForm" (ngSubmit)="updateElevatorState(upDateElevatorForm.value.elevatorId, upDateElevatorForm.value.currentFloor, upDateElevatorForm.value.destinationFloor, upDateElevatorForm.value.isMovingUp)">
+<h3>Update Elevator State</h3>
+<label for="elevatorId">Elevator ID:</label>
+<input type="number" id="elevatorId" name="elevatorId" ngModel required>
+<br>
+<label for="currentFloor">Current Floor:</label>
+<input type="number" id="currentFloor" name="currentFloor" ngModel required>
+<br>
+<label for="destinationFloor">Destination Floor:</label>
+<input type="number" id="destinationFloor" name="destinationFloor" ngModel required>
+<br>
+<label for="isMovingUp">Is Moving Up:</label>
+<input type="checkbox" id="isMovingUp" name="isMovingUp" ngModel>
+<br>
+<button type="submit">Update Elevator</button>
+</form>
+
+<button (click)="performSimulationStep()">Perform Simulation Step</button>
+<button (click)="getElevatorStatus()">Get Elevator Status</button>
 

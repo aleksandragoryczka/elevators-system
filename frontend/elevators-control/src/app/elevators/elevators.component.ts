@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs';
+
+const BASE_URL = 'http://localhost:8080/api/elevators';
 
 @Component({
   selector: 'app-elevators',
@@ -9,26 +12,26 @@ import { FormsModule } from '@angular/forms';
 })
 export class ElevatorsComponent implements OnInit {
   elevators: any[] = []; //TODO: to be changed to Elevator model
+  refreshData$: Subject<void> = new Subject<void>();
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.http
-      .get<any[]>('http://localhost:8080/api/elevators')
-      .subscribe((data) => {
+    this.refreshData$.subscribe(() =>
+      this.http.get<any[]>(BASE_URL).subscribe((data) => {
         this.elevators = data;
-      });
+      })
+    );
+    this.refreshData$.next();
+
+    setInterval(() => {
+      this.performSimulationStep();
+    }, 1900);
   }
 
   callElevator(elevatorId: number, floor: number): void {
     this.http
-      .put(
-        'http://localhost:8080/api/elevators' +
-          elevatorId +
-          '/callElevator/' +
-          floor,
-        null
-      )
+      .post(`${BASE_URL}/${elevatorId}/callElevator?floor=${floor}`, null)
       .subscribe();
   }
 
@@ -39,7 +42,7 @@ export class ElevatorsComponent implements OnInit {
     isMovingUp: boolean
   ): void {
     this.http
-      .put('http://localhost:8080/api/elevators/' + elevatorId + '/state', {
+      .put(`${BASE_URL}/${elevatorId}`, {
         currentFloor: currentFloor,
         destinationFloor: destinationFloor,
         isMovingUp: isMovingUp,
@@ -47,17 +50,15 @@ export class ElevatorsComponent implements OnInit {
       .subscribe();
   }
 
-  performSimulationState(): void {
-    this.http
-      .put('https://localhost:8080/api/elevators/simulate', null)
-      .subscribe();
+  performSimulationStep(): void {
+    this.http.post(`${BASE_URL}/simulate`, null).subscribe(() => {
+      this.refreshData$.next();
+    });
   }
 
   getElevatorStatus(): void {
-    this.http
-      .get<any>('http://localhost:8080/api/elevators/status')
-      .subscribe((data) => {
-        console.log(data);
-      });
+    this.http.get<any>(`${BASE_URL}/status`).subscribe((data) => {
+      console.log(data);
+    });
   }
 }
