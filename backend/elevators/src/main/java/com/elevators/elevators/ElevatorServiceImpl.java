@@ -13,6 +13,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
 
+enum isMovingUp {
+    UP,
+    DOWN,
+    NULL
+}
+
 @Service
 public class ElevatorServiceImpl implements ElevatorService {
     private List<Elevator> elevators;
@@ -71,6 +77,7 @@ public class ElevatorServiceImpl implements ElevatorService {
     public void performSimulationStep() {
         for (Elevator elevator : elevators) {
             List<Integer> seekSequence = new ArrayList<Integer>();
+            // int nextFloor;
 
             System.out.println("current: " + elevator.getCurrentFloor() + "winda: " + elevator.getId());
             if (elevator.getDestinationFloors().contains(elevator.getCurrentFloor())) {
@@ -84,45 +91,32 @@ public class ElevatorServiceImpl implements ElevatorService {
             }
             System.out.println("podane pietor: " + elevator.getDestinationFloors());
 
+            // jesli jest na drodze to jest ok -> co jesli dostanie inne zgloszenie - "z
+            // drugiej strony"
             seekSequence = this.SCANAlgoritm(elevator.getDestinationFloors(), elevator.getCurrentFloor(),
                     elevator.isMovingUp());
-            for (int nextFloor : seekSequence) {
-                // tochange -> bardziej logicznie!!!!!!!!
-                if (nextFloor < elevator.getCurrentFloor()) {
-                    elevator.setMovingUp(false);
-                } else {
-                    elevator.setMovingUp(true);
-                }
 
+            while (!seekSequence.isEmpty()) {
                 int move = elevator.isMovingUp() ? 1 : -1;
-                for (int i = elevator.getCurrentFloor() + move; i != nextFloor + move; i += move) {
+                for (int i = elevator.getCurrentFloor() + move; i != seekSequence.get(0) + move; i += move) {
                     elevator.setCurrentFloor(i);
-                    // TimeUnit.SECONDS.sleep(1);
                     System.out.println("Jestem na: " + elevator.getCurrentFloor());
                     try {
                         Thread.sleep(1500);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
+                seekSequence.remove(0);
+                elevator.setDestinationFloors(seekSequence);
             }
-            elevator.setDestinationFloors(new ArrayList<Integer>());
         }
     }
 
     private List<Integer> SCANAlgoritm(List<Integer> destinationFloorsList, int currentFloor, boolean isMovingUp) {
         Vector<Integer> up = new Vector<Integer>(), down = new Vector<Integer>();
-        int nowFloor = 0;
-        // pom seekSequence
+        int nowOnFloor = 0;
         Vector<Integer> seekSequence = new Vector<Integer>();
-        /*
-         * if (isMovingUp == false) {
-         * down.add(0);
-         * } else {
-         * up.add(FLOORS_NUM - 1);
-         * }
-         */
 
         for (int i = 0; i < destinationFloorsList.size(); i++) {
             if (destinationFloorsList.get(i) < currentFloor) {
@@ -141,20 +135,20 @@ public class ElevatorServiceImpl implements ElevatorService {
         while (run-- > 0) {
             if (!isMovingUp) {
                 for (int i = down.size() - 1; i >= 0; i--) {
-                    nowFloor = down.get(i);
+                    nowOnFloor = down.get(i);
 
                     // do pozniejszego wypisywania
-                    seekSequence.add(nowFloor);
+                    seekSequence.add(nowOnFloor);
 
-                    currentFloor = nowFloor;
+                    currentFloor = nowOnFloor;
                 }
                 isMovingUp = true;
             } else {
                 for (int i = 0; i < up.size(); i++) {
-                    nowFloor = up.get(i);
+                    nowOnFloor = up.get(i);
 
-                    seekSequence.add(nowFloor);
-                    currentFloor = nowFloor;
+                    seekSequence.add(nowOnFloor);
+                    currentFloor = nowOnFloor;
                 }
                 isMovingUp = false;
             }
