@@ -10,7 +10,7 @@ public interface ElevatorService {
 
     void callElevator(int elevatorId, int floor);
 
-    void updateElevatorState(int elevatorId, int currentFloor, int destinationFloor, boolean isMovingUp);
+    void updateElevatorState(int elevatorId, int currentFloor, List<Integer> destinationFloor, boolean isMovingUp);
 
     void performSimulationStep();
 

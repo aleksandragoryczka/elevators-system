@@ -40,7 +40,7 @@ public class ElevatorController {
 
     @PutMapping("/{id}")
     public void updateElevatorState(@PathVariable int id, @RequestBody Elevator elevator) {
-        elevatorService.updateElevatorState(id, elevator.getCurrentFloor(), elevator.getDestinationFloor(),
+        elevatorService.updateElevatorState(id, elevator.getCurrentFloor(), elevator.getDestinationFloors(),
                 elevator.isMovingUp());
     }
 

@@ -1,5 +1,7 @@
 package com.elevators.elevators;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,5 +14,6 @@ import lombok.Setter;
 public class ElevatorStatus {
     private int elevatorId;
     private int currentFloor;
-    private int destinationFloor;
+    private List<Integer> destinationFloors;
+    // private int destinationFloor;
 }

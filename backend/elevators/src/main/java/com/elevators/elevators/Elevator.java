@@ -1,5 +1,7 @@
 package com.elevators.elevators;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +12,7 @@ import lombok.Setter;
 public class Elevator {
     private int id;
     private int currentFloor;
-    private int destinationFloor;
+    private List<Integer> destinationFloors;
     private boolean isMovingUp;
 
 }
