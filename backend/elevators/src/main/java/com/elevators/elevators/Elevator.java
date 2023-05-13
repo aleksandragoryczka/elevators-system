@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
+import org.springframework.web.servlet.tags.form.SelectTag;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,14 +32,12 @@ public class Elevator implements Runnable {
     public void run() {
         running = true;
         List<Integer> seekSequence = new ArrayList<Integer>();
-        // int nextFloor;
 
-        // System.out.println("current: " + elevator.getCurrentFloor() + "winda: " +
-        // elevator.getId());
         while (running) {
             if (destinationFloors.contains(currentFloor)) {
                 destinationFloors.remove(currentFloor);
-                // elevator.getDestinationFloors().remove(elevator.getCurrentFloor());
+                seekSequence.remove(currentFloor);
+                System.out.println("obecnie na pietrze hmmmm: " + currentFloor);
                 System.out.println("winda jest juz na requestowanym pietrze");
                 continue;
             }
@@ -49,26 +49,48 @@ public class Elevator implements Runnable {
 
             // jesli jest na drodze to jest ok -> co jesli dostanie inne zgloszenie - "z
             // drugiej strony"
-            seekSequence = this.SCANAlgoritm(destinationFloors, currentFloor, isMovingUp);
-
-            while (!seekSequence.isEmpty()) {
-                int move = isMovingUp ? 1 : -1;
-                for (int i = currentFloor + move; i != seekSequence.get(0) + move; i += move) {
-                    currentFloor = i;
-                    System.out.println(id + " jest na: " + currentFloor);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                seekSequence.remove(0);
-                destinationFloors = seekSequence;
-                // elevator.setDestinationFloors(seekSequence);
+            if (destinationFloors.get(0) > currentFloor) {
+                isMovingUp = true;
+            } else if (destinationFloors.get(0) < currentFloor) {
+                isMovingUp = false;
             }
+            seekSequence = this.SCANAlgoritm(destinationFloors, currentFloor, isMovingUp);
+            System.out.println(seekSequence + "tutaj!!");
+            int move = isMovingUp ? 1 : -1;
+            int i = currentFloor;
+
+            while (!seekSequence.isEmpty() && i != seekSequence.get(0) + move) {
+                currentFloor = i;
+                System.out.println(id + " jest na: " + currentFloor);
+                System.out.println(isMovingUp);
+                try {
+                    Thread.sleep(1200);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (!destinationFloors.isEmpty()) {
+                    // Recompute seek sequence and continue looping
+                    if (destinationFloors.contains(currentFloor)) {
+                        destinationFloors.remove(destinationFloors.indexOf(currentFloor));
+                        seekSequence.remove(seekSequence.indexOf(currentFloor));
+                        System.out.println("obecnie na pietrze: " + currentFloor);
+                        // System.out.println("w seek sequence[0]: " + seekSequence.get(0));
+                        if (!seekSequence.isEmpty() && seekSequence.get(0) > currentFloor) {
+                            isMovingUp = true;
+                        } else {
+                            isMovingUp = false;
+                        }
+                    }
+                    seekSequence = this.SCANAlgoritm(destinationFloors, currentFloor, isMovingUp);
+                }
+                // elevator.setDestinationFloors(seekSequence);
+                move = isMovingUp ? 1 : -1;
+                i += move;
+            }
+            System.out.println("po dojechaniu: " + seekSequence);
         }
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'run'");
+        System.out.println("wyszla z petli");
     }
 
     private List<Integer> SCANAlgoritm(List<Integer> destinationFloorsList, int currentFloor, boolean isMovingUp) {

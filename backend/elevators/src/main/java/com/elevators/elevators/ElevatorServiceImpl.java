@@ -60,10 +60,11 @@ public class ElevatorServiceImpl implements ElevatorService {
         calledElevator.add(floor);
         // System.out.println(calledElevator.size());
         elevator.setDestinationFloors(calledElevator);
-        elevator.setMovingUp(floor > elevator.getCurrentFloor()); // jesli destinitionFloor jest wieksze od obecnego
-                                                                  // floor -> isMovingUp = true -> jedzie do gory, w
-                                                                  // odwrotnym rpzypadku isMovingUp = false -> jedzie na
-                                                                  // dol
+        // elevator.setMovingUp(floor > elevator.getCurrentFloor()); // jesli
+        // destinitionFloor jest wieksze od obecnego
+        // floor -> isMovingUp = true -> jedzie do gory, w
+        // odwrotnym rpzypadku isMovingUp = false -> jedzie na
+        // dol
         this.performSimulationStep(); // TODO: czy to ma byc tutaj ?!!?!?!??!?! gdzie przeprowadzac ten step?
     }
 
