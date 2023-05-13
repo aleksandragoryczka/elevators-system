@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-
-import org.springframework.web.servlet.tags.form.SelectTag;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,15 +13,15 @@ public class Elevator implements Runnable {
     private int id;
     private int currentFloor;
     private List<Integer> destinationFloors;
-    private boolean isMovingUp;
+    private DirectionsEnum direction;
     private boolean running;
 
-    public Elevator(int elevatorId, int initialFloor, List<Integer> destinationFloors, boolean isMovingUp) {
+    public Elevator(int elevatorId, int initialFloor, List<Integer> destinationFloors) {
         this.id = elevatorId;
         this.currentFloor = initialFloor;
         this.destinationFloors = destinationFloors;
         this.running = false;
-        this.isMovingUp = isMovingUp;
+        this.direction = DirectionsEnum.NULL;
     }
 
     @Override
@@ -50,19 +46,21 @@ public class Elevator implements Runnable {
             // jesli jest na drodze to jest ok -> co jesli dostanie inne zgloszenie - "z
             // drugiej strony"
             if (destinationFloors.get(0) > currentFloor) {
-                isMovingUp = true;
+                direction = DirectionsEnum.UP;
+                //isMovingUp = true;
             } else if (destinationFloors.get(0) < currentFloor) {
-                isMovingUp = false;
+                direction = DirectionsEnum.DOWN;
+                //isMovingUp = false;
             }
-            seekSequence = this.SCANAlgoritm(destinationFloors, currentFloor, isMovingUp);
+            seekSequence = this.SCANAlgoritm(destinationFloors, currentFloor, direction);
             System.out.println(seekSequence + "tutaj!!");
-            int move = isMovingUp ? 1 : -1;
+            int move = direction == DirectionsEnum.UP ? 1 : -1;
             int i = currentFloor;
 
             while (!seekSequence.isEmpty() && i != seekSequence.get(0) + move) {
                 currentFloor = i;
                 System.out.println(id + " jest na: " + currentFloor);
-                System.out.println(isMovingUp);
+                System.out.println(direction);
                 try {
                     Thread.sleep(1200);
 
@@ -77,23 +75,24 @@ public class Elevator implements Runnable {
                         System.out.println("obecnie na pietrze: " + currentFloor);
                         // System.out.println("w seek sequence[0]: " + seekSequence.get(0));
                         if (!seekSequence.isEmpty() && seekSequence.get(0) > currentFloor) {
-                            isMovingUp = true;
+                            direction = DirectionsEnum.UP;
                         } else {
-                            isMovingUp = false;
+                            direction = DirectionsEnum.DOWN;
                         }
                     }
-                    seekSequence = this.SCANAlgoritm(destinationFloors, currentFloor, isMovingUp);
+                    seekSequence = this.SCANAlgoritm(destinationFloors, currentFloor, direction);
                 }
                 // elevator.setDestinationFloors(seekSequence);
-                move = isMovingUp ? 1 : -1;
+                move = direction == DirectionsEnum.UP ? 1 : -1;
                 i += move;
             }
+            direction = DirectionsEnum.NULL;
             System.out.println("po dojechaniu: " + seekSequence);
         }
         System.out.println("wyszla z petli");
     }
 
-    private List<Integer> SCANAlgoritm(List<Integer> destinationFloorsList, int currentFloor, boolean isMovingUp) {
+    private List<Integer> SCANAlgoritm(List<Integer> destinationFloorsList, int currentFloor, DirectionsEnum direction) {
         Vector<Integer> up = new Vector<Integer>(), down = new Vector<Integer>();
         int nowOnFloor = 0;
         Vector<Integer> seekSequence = new Vector<Integer>();
@@ -113,7 +112,7 @@ public class Elevator implements Runnable {
         // napisac wybor czy ma najpierw zaczac poruszac sie w prawo czy w lewo
         int run = 2;
         while (run-- > 0) {
-            if (!isMovingUp) {
+            if (direction == DirectionsEnum.DOWN) {
                 for (int i = down.size() - 1; i >= 0; i--) {
                     nowOnFloor = down.get(i);
 
@@ -122,15 +121,15 @@ public class Elevator implements Runnable {
 
                     currentFloor = nowOnFloor;
                 }
-                isMovingUp = true;
-            } else {
+                direction = DirectionsEnum.UP;
+            } else if(direction == DirectionsEnum.UP) {
                 for (int i = 0; i < up.size(); i++) {
                     nowOnFloor = up.get(i);
 
                     seekSequence.add(nowOnFloor);
                     currentFloor = nowOnFloor;
                 }
-                isMovingUp = false;
+                direction = DirectionsEnum.DOWN;
             }
         }
         System.out.println("seekSequence" + seekSequence);

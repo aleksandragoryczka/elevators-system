@@ -1,6 +1,8 @@
+import { DirectionsEnum } from "./directions-enum";
+
 export class Elevator {
   id?: number;
   currentFloor?: number;
-  destinationFloor?: number[];
-  isMovingUp?: boolean;
+  destinationFloors?: number[];
+  direction?: DirectionsEnum;
 }

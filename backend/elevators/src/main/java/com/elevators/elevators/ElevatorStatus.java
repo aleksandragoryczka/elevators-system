@@ -15,5 +15,4 @@ public class ElevatorStatus {
     private int elevatorId;
     private int currentFloor;
     private List<Integer> destinationFloors;
-    // private int destinationFloor;
 }

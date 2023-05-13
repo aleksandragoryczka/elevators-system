@@ -1,7 +1,6 @@
 package com.elevators.elevators;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ElevatorService {
     List<Elevator> getAllElevators();
@@ -10,7 +9,7 @@ public interface ElevatorService {
 
     void callElevator(int elevatorId, int floor);
 
-    void updateElevatorState(int elevatorId, int currentFloor, List<Integer> destinationFloor, boolean isMovingUp);
+    public void updateElevatorState(int elevatorId, int currentFloor, List<Integer> destinationFloor, DirectionsEnum direction);
 
     void performSimulationStep();
 

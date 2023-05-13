@@ -1,7 +1,6 @@
 package com.elevators.elevators;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,8 +39,7 @@ public class ElevatorController {
 
     @PutMapping("/{id}")
     public void updateElevatorState(@PathVariable int id, @RequestBody Elevator elevator) {
-        elevatorService.updateElevatorState(id, elevator.getCurrentFloor(), elevator.getDestinationFloors(),
-                elevator.isMovingUp());
+        elevatorService.updateElevatorState(id, elevator.getCurrentFloor(), elevator.getDestinationFloors(), elevator.getDirection());
     }
 
     @PostMapping("/simulate")

@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject} from 'rxjs';
 import { Elevator } from './elevator.model';
+import { environment } from 'src/environments/environment';
+import { DirectionsEnum } from './directions-enum';
+
 
 const BASE_URL = 'http://localhost:8080/api/elevators';
 
@@ -12,25 +14,21 @@ const BASE_URL = 'http://localhost:8080/api/elevators';
   styleUrls: ['./elevators.component.scss'],
 })
 export class ElevatorsComponent implements OnInit {
-  elevators: any[] = []; //TODO: to be changed to Elevator model
+  elevators: Elevator[] = []; //TODO: to be changed to Elevator model
   refreshData$: Subject<void> = new Subject<void>();
-
-  list: number[] = [1, 2, 3];
+  DirectionsEnum = DirectionsEnum;
+  floors = 10;
+  floorsArray: number[] = Array.from(Array(this.floors).keys());
+  @Input() elevatorsListNumber!: number;
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    /*
-    this.refreshData$.subscribe(() =>
-      this.http.get<Elevator[]>(BASE_URL).subscribe((data) => {
-        this.elevators = data;
-      })
-    );*/
     this.refreshData$.next();
-    console.log(this.elevators);
+    //console.log(this.elevators);
 
     setInterval(() => {
-      this.getElevatorStatus();
+      this.getElevatorsStatuses();
     }, 800);
   }
 
@@ -63,8 +61,8 @@ export class ElevatorsComponent implements OnInit {
       .subscribe(() => this.refreshData$.next());
   }
 
-  getElevatorStatus(): void {
-    this.http.get<any[]>(BASE_URL).subscribe((data) => {
+  getElevatorsStatuses(): void {
+    this.http.get<Elevator[]>(BASE_URL).subscribe((data) => {
       this.elevators = data;
       console.log(data);
     });
