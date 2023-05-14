@@ -52,7 +52,8 @@ public class Elevator implements Runnable {
                 direction = DirectionsEnum.DOWN;
                 //isMovingUp = false;
             }
-            seekSequence = this.SCANAlgoritm(destinationFloors, currentFloor, direction);
+            seekSequence = destinationFloors;
+            //seekSequence = this.SCANAlgoritm(destinationFloors, currentFloor, direction);
             System.out.println(seekSequence + "tutaj!!");
             int move = direction == DirectionsEnum.UP ? 1 : -1;
             int i = currentFloor;
@@ -62,7 +63,7 @@ public class Elevator implements Runnable {
                 System.out.println(id + " jest na: " + currentFloor);
                 System.out.println(direction);
                 try {
-                    Thread.sleep(1200);
+                    Thread.sleep(1000);
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -80,7 +81,7 @@ public class Elevator implements Runnable {
                             direction = DirectionsEnum.DOWN;
                         }
                     }
-                    seekSequence = this.SCANAlgoritm(destinationFloors, currentFloor, direction);
+                    seekSequence = this.elevatorsAlgoritm(destinationFloors, currentFloor, direction);
                 }
                 // elevator.setDestinationFloors(seekSequence);
                 move = direction == DirectionsEnum.UP ? 1 : -1;
@@ -92,7 +93,7 @@ public class Elevator implements Runnable {
         System.out.println("wyszla z petli");
     }
 
-    private List<Integer> SCANAlgoritm(List<Integer> destinationFloorsList, int currentFloor, DirectionsEnum direction) {
+    private List<Integer> elevatorsAlgoritm(List<Integer> destinationFloorsList, int currentFloor, DirectionsEnum direction) {
         Vector<Integer> up = new Vector<Integer>(), down = new Vector<Integer>();
         int nowOnFloor = 0;
         Vector<Integer> seekSequence = new Vector<Integer>();

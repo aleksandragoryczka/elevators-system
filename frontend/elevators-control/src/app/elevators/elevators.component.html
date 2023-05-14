@@ -1,61 +1,46 @@
 <div class="main-container d-flex justify-content-around pt-4">
-    <div class="elevators-container">
-        <h2>Elevators</h2>
-        <p>{{ elevatorsListNumber }}</p>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Current Floor</th>
-                    <th>Destination Floors</th>
-                    <th>Move Direciton</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let elevator of elevators">
-                    <td>{{ elevator.id }}</td>
-                    <td>{{ elevator.currentFloor }}</td>
-                    <td>{{elevator['destinationFloors']}}</td>
-                    <ng-container *ngIf="elevator.direction === DirectionsEnum.UP">
-                        <td><i class="bi bi-arrow-up-circle"></i></td>
-                    </ng-container>
-                    <ng-container *ngIf="elevator.direction === DirectionsEnum.DOWN">
-                        <td><i class="bi bi-arrow-down-circle"></i></td>
-                    </ng-container>
-                    <ng-container *ngIf="elevator.direction === DirectionsEnum.NULL">
-                        <td><i class="bi bi-circle"></i></td>
-                    </ng-container>
-                </tr>
-            </tbody>
-        </table>
+  <div class="elevators-container">
+    <h2>Elevators</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Current Floor</th>
+          <th>Destination Floors</th>
+          <th>Move Direciton</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let elevator of elevators">
+          <td>{{ elevator.id }}</td>
+          <td>{{ elevator.currentFloor }}</td>
+          <td>{{ elevator["destinationFloors"] }}</td>
+          <ng-container *ngIf="elevator.direction === DirectionsEnum.UP">
+            <td><i class="bi bi-arrow-up-circle"></i></td>
+          </ng-container>
+          <ng-container *ngIf="elevator.direction === DirectionsEnum.DOWN">
+            <td><i class="bi bi-arrow-down-circle"></i></td>
+          </ng-container>
+          <ng-container *ngIf="elevator.direction === DirectionsEnum.NULL">
+            <td><i class="bi bi-circle"></i></td>
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="buttons-container d-flex flex-column align-items-center">
+    <h2>What floor are you on?</h2>
+    <div class="floors-buttons d-flex flex-row justify-content-center">
+      <ng-container *ngFor="let startbutton of floorsArray">
+        <button mat-fab color="primary" (click)="callElevator(startbutton)">{{ startbutton }}</button>
+      </ng-container>
     </div>
-    <div class="buttons-container d-flex flex-column align-items-center">  
-        <!-- //TODO: delete form-->  
-        <form #callElevatorForm="ngForm" (ngSubmit)="callElevator(callElevatorForm.value.elevatorId, callElevatorForm.value.floor)">
-            <h3>Call Elevator</h3>
-            <label for="elevatorId">Elevator ID:</label>
-            <input type="number" id="elevatorId" name="elevatorId" ngModel required>
-            <br>
-            <label for="floor">Floor:</label>
-            <input type="number" id="floor" name="floor" ngModel required>
-            <br>
-            <button type="submit">Call elevator</button>
-        </form>
-        <br><br>
-        <h2>What floor are you on? </h2>
-        <div class="floors-buttons d-flex flex-row justify-content-center">
-            <ng-container *ngFor="let button of floorsArray">
-                <button mat-fab color="primary"> {{ button }} </button>
-            </ng-container>
-        </div>
-        <br><br>
-        <h2>What floor do you want to go? </h2>
-        <div class="floors-buttons d-flex flex-row justify-content-center">
-            <ng-container *ngFor="let button of floorsArray" class="floors-buttons">
-                <button mat-fab color="warn"> {{ button }} </button>
-            </ng-container>
-        </div>
+    <br /><br />
+    <h2>What floor do you want to go?</h2>
+    <div class="floors-buttons d-flex flex-row justify-content-center">
+      <ng-container *ngFor="let endbutton of floorsArray">
+        <button mat-fab color="warn" (click)="callElevator(endbutton)">{{ endbutton }}</button>
+      </ng-container>
     </div>
+  </div>
 </div>
-
-

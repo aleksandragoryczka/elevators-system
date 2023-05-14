@@ -1,4 +1,4 @@
-import { DirectionsEnum } from "./directions-enum";
+import { DirectionsEnum } from './directions-enum';
 
 export class Elevator {
   id?: number;

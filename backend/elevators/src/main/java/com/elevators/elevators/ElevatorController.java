@@ -27,15 +27,29 @@ public class ElevatorController {
         return elevatorService.getAllElevators();
     }
 
+    @PostMapping("")
+    public void initializeElevatorsNumber(@RequestParam int elevatorsNumber){  
+        this.elevatorService = new ElevatorServiceImpl(elevatorsNumber);
+    }
+
     @GetMapping("/{id}")
     public Elevator getElevatorById(@PathVariable int id) {
         return elevatorService.getElevatorById(id);
     }
 
-    @PostMapping("/{id}/callElevator")
-    public void callElevator(@PathVariable int id, @RequestParam int floor) {
-        elevatorService.callElevator(id, floor);
+    @PostMapping("/callElevator")
+    public void callElevator(@RequestParam int floor) {
+        elevatorService.callElevator(floor);
     }
+    
+/*
+    @PostMapping("/callElevator")
+    public void chooseFloorToGo(@RequestParam int endFloor) {
+        elevatorService.callElevator();
+    }*/
+
+
+
 
     @PutMapping("/{id}")
     public void updateElevatorState(@PathVariable int id, @RequestBody Elevator elevator) {

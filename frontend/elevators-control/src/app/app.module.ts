@@ -8,14 +8,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
-import { environment } from './../environments/environment';
-import {MatButtonModule} from '@angular/material/button';
-import { InputComponentComponent } from './input-component/input-component.component';
-import {MatSliderModule} from '@angular/material/slider';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSliderModule } from '@angular/material/slider';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { StartInputsComponent } from './start-inputs/start-inputs.component';
 
 @NgModule({
-  declarations: [AppComponent, ElevatorsComponent, InputComponentComponent],
+  declarations: [AppComponent, ElevatorsComponent, StartInputsComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -25,7 +24,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatIconModule,
     MatButtonModule,
     MatSliderModule,
-    MatFormFieldModule
+    MatFormFieldModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

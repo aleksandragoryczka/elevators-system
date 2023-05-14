@@ -1,0 +1,14 @@
+<div mat-dialog-content class="input-container d-flex flex-column justify-content-center align-items-center">
+<h1>Set simulation properties:</h1>
+<mat-slider [max]="16" [min]="1" [discrete]="true">
+  <input matSliderThumb [(ngModel)]="inputsList[0]" />
+</mat-slider>
+<mat-label>Number of elevators: {{ inputsList[0] }} </mat-label>
+<br />
+<br />
+<mat-slider [max]="20" [min]="3" [discrete]="true">
+  <input matSliderThumb [(ngModel)]="inputsList[1]" />
+</mat-slider>
+<mat-label>Number of floors: {{ inputsList[1] }} </mat-label>
+<button (click)="submitInput()">Submit</button>
+</div>

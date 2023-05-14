@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject} from 'rxjs';
+import { Subject } from 'rxjs';
 import { Elevator } from './elevator.model';
 import { environment } from 'src/environments/environment';
 import { DirectionsEnum } from './directions-enum';
+import { ActivatedRoute } from '@angular/router';
 
-
-const BASE_URL = 'http://localhost:8080/api/elevators';
+const BASE_URL = environment.apiUrl + '/elevators';
 
 @Component({
   selector: 'app-elevators',
@@ -17,28 +17,58 @@ export class ElevatorsComponent implements OnInit {
   elevators: Elevator[] = []; //TODO: to be changed to Elevator model
   refreshData$: Subject<void> = new Subject<void>();
   DirectionsEnum = DirectionsEnum;
-  floors = 10;
-  floorsArray: number[] = Array.from(Array(this.floors).keys());
-  @Input() elevatorsListNumber!: number;
+  floorsArray: number[] = []; //= Array.from(Array(this.inputList[1]).keys());
+  elevatorsNumber: number = 1;
+ 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private route: ActivatedRoute) {
+    this.route.params.subscribe(params =>{
+      if(params['inputsList']){
+        this.elevatorsNumber = params['inputsList'][0];
+        this.floorsArray = Array.from(Array(params['inputsList'][1]).keys());
+        console.log(this.floorsArray);
+      }else if(window.history.state.inputsList){
+        this.elevatorsNumber = window.history.state.inputsList[0];
+        this.floorsArray = Array.from(Array(window.history.state.inputsList[1]).keys());
+      }
+    });
+  }
 
   ngOnInit(): void {
+    this.http.post(`${BASE_URL}?elevatorsNumber=${this.elevatorsNumber}`, null).subscribe();
+
     this.refreshData$.next();
-    //console.log(this.elevators);
 
     setInterval(() => {
       this.getElevatorsStatuses();
     }, 800);
   }
 
+  callElevator(floor: number): void {
+    this.http
+      .post(`${BASE_URL}/callElevator?floor=${floor}`, null)
+      .subscribe(() => this.refreshData$.next());
+    //this.updateElevatorState(elevatorId, floor);
+    //console.log(this.getElevatorStatus());
+  }
+
+  chooseFloorToGo(endFloor: number): void {
+    this.http
+      .post(`${BASE_URL}/callElevator?endFloor=${endFloor}`, null)
+      .subscribe(() => this.refreshData$.next());
+    //this.updateElevatorState(elevatorId, floor);
+    //console.log(this.getElevatorStatus());
+  }
+
+
+/*
   callElevator(elevatorId: number, floor: number): void {
     this.http
       .post(`${BASE_URL}/${elevatorId}/callElevator?floor=${floor}`, null)
       .subscribe(() => this.refreshData$.next());
     //this.updateElevatorState(elevatorId, floor);
     //console.log(this.getElevatorStatus());
-  }
+  }*/
 
   updateElevatorState(
     elevatorId: number,
@@ -64,7 +94,6 @@ export class ElevatorsComponent implements OnInit {
   getElevatorsStatuses(): void {
     this.http.get<Elevator[]>(BASE_URL).subscribe((data) => {
       this.elevators = data;
-      console.log(data);
     });
   }
 }
