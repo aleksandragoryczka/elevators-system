@@ -19,6 +19,8 @@ export class ElevatorsComponent implements OnInit {
   DirectionsEnum = DirectionsEnum;
   floorsArray: number[] = []; //= Array.from(Array(this.inputList[1]).keys());
   elevatorsNumber: number = 1;
+
+  selectedFloors: number[] = [0, 0];
  
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
@@ -52,12 +54,8 @@ export class ElevatorsComponent implements OnInit {
     //console.log(this.getElevatorStatus());
   }
 
-  chooseFloorToGo(endFloor: number): void {
-    this.http
-      .post(`${BASE_URL}/callElevator?endFloor=${endFloor}`, null)
-      .subscribe(() => this.refreshData$.next());
-    //this.updateElevatorState(elevatorId, floor);
-    //console.log(this.getElevatorStatus());
+  submitChosenFloors(): void {
+    console.log("cos");
   }
 
 
@@ -96,4 +94,10 @@ export class ElevatorsComponent implements OnInit {
       this.elevators = data;
     });
   }
+
+  options = [
+    {label: '1', value: 1}
+  ]
+
+
 }

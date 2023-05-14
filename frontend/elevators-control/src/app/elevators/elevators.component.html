@@ -28,19 +28,28 @@
       </tbody>
     </table>
   </div>
-  <div class="buttons-container d-flex flex-column align-items-center">
+  <div class="buttons-container">
+    <div>
     <h2>What floor are you on?</h2>
-    <div class="floors-buttons d-flex flex-row justify-content-center">
-      <ng-container *ngFor="let startbutton of floorsArray">
-        <button mat-fab color="primary" (click)="callElevator(startbutton)">{{ startbutton }}</button>
-      </ng-container>
+      <mat-radio-group [(ngModel)]="selectedFloors[0]" class="d-flex flex-column justify-content-center">
+        <mat-radio-button *ngFor="let floor of floorsArray" 
+                          [value]="floor"> <button mat-mini-fab color="warn"> {{ floor }}</button>
+                        </mat-radio-button>
+      </mat-radio-group>
     </div>
-    <br /><br />
+    <div>
     <h2>What floor do you want to go?</h2>
-    <div class="floors-buttons d-flex flex-row justify-content-center">
-      <ng-container *ngFor="let endbutton of floorsArray">
-        <button mat-fab color="warn" (click)="callElevator(endbutton)">{{ endbutton }}</button>
-      </ng-container>
-    </div>
+    <mat-radio-group [(ngModel)]="selectedFloors[1]" class="d-flex flex-column justify-content-center">
+      <mat-radio-button *ngFor="let floor of floorsArray" 
+                        [value]="floor"> <button mat-mini-fab color="primary"> {{ floor }}</button>
+                      </mat-radio-button>
+    </mat-radio-group>
+    </div> 
+    <button mat-fab class="submit-button" color="warn">Call elevator</button>
   </div>
 </div>
+
+<!--
+<ng-container *ngFor="let startbutton of floorsArray">
+  <button mat-fab color="primary" (click)="callElevator(startbutton)">{{ startbutton }}</button>
+</ng-container>-->

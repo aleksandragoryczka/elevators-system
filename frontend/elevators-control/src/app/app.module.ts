@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { StartInputsComponent } from './start-inputs/start-inputs.component';
+import {MatRadioModule} from '@angular/material/radio';
 
 @NgModule({
   declarations: [AppComponent, ElevatorsComponent, StartInputsComponent],
@@ -25,6 +26,7 @@ import { StartInputsComponent } from './start-inputs/start-inputs.component';
     MatButtonModule,
     MatSliderModule,
     MatFormFieldModule,
+    MatRadioModule
   ],
   providers: [],
   bootstrap: [AppComponent],

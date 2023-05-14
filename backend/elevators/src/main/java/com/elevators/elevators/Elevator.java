@@ -63,7 +63,7 @@ public class Elevator implements Runnable {
                 System.out.println(id + " jest na: " + currentFloor);
                 System.out.println(direction);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(800);
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -87,6 +87,14 @@ public class Elevator implements Runnable {
                 move = direction == DirectionsEnum.UP ? 1 : -1;
                 i += move;
             }
+            direction = DirectionsEnum.WAITING;
+            System.out.println("winda czeka na sygnal gdzie dalej i jest " + direction);
+            try{
+                Thread.sleep(3500);
+            }catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Still: " + direction);
             direction = DirectionsEnum.NULL;
             System.out.println("po dojechaniu: " + seekSequence);
         }
