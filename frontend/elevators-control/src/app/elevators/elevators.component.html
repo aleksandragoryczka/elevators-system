@@ -21,7 +21,7 @@
           <ng-container *ngIf="elevator.direction === DirectionsEnum.DOWN">
             <td><i class="bi bi-arrow-down-circle"></i></td>
           </ng-container>
-          <ng-container *ngIf="elevator.direction === DirectionsEnum.NULL">
+          <ng-container *ngIf="elevator.direction === DirectionsEnum.NULL || elevator.direction === DirectionsEnum.WAITING">
             <td><i class="bi bi-circle"></i></td>
           </ng-container>
         </tr>
@@ -45,7 +45,7 @@
                       </mat-radio-button>
     </mat-radio-group>
     </div> 
-    <button mat-fab class="submit-button" color="warn">Call elevator</button>
+    <button mat-fab class="submit-button" color="warn" (click)="callElevator(selectedFloors)">Call elevator</button>
   </div>
 </div>
 

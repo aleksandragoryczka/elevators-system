@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,90 +16,94 @@ public class Elevator implements Runnable {
     private List<Integer> destinationFloors;
     private DirectionsEnum direction;
     private boolean running;
+    private int nextFloor;
 
     public Elevator(int elevatorId, int initialFloor, List<Integer> destinationFloors) {
         this.id = elevatorId;
         this.currentFloor = initialFloor;
         this.destinationFloors = destinationFloors;
-        this.running = false;
         this.direction = DirectionsEnum.NULL;
+        this.nextFloor = currentFloor; //TODO: is it okay?
     }
 
     @Override
     public void run() {
         running = true;
-        List<Integer> seekSequence = new ArrayList<Integer>();
+        int move = 0;
 
         while (running) {
-            if (destinationFloors.contains(currentFloor)) {
-                destinationFloors.remove(currentFloor);
-                seekSequence.remove(currentFloor);
-                System.out.println("obecnie na pietrze hmmmm: " + currentFloor);
-                System.out.println("winda jest juz na requestowanym pietrze");
-                continue;
-            }
-            if (destinationFloors.isEmpty()) {
-                // System.out.println("Prosze daj pietro na ktore chcesz jechac");
-                continue;
-            }
-            System.out.println("podane piera: " + destinationFloors);
-
-            // jesli jest na drodze to jest ok -> co jesli dostanie inne zgloszenie - "z
-            // drugiej strony"
-            if (destinationFloors.get(0) > currentFloor) {
-                direction = DirectionsEnum.UP;
-                //isMovingUp = true;
-            } else if (destinationFloors.get(0) < currentFloor) {
-                direction = DirectionsEnum.DOWN;
-                //isMovingUp = false;
-            }
-            seekSequence = destinationFloors;
-            //seekSequence = this.SCANAlgoritm(destinationFloors, currentFloor, direction);
-            System.out.println(seekSequence + "tutaj!!");
-            int move = direction == DirectionsEnum.UP ? 1 : -1;
-            int i = currentFloor;
-
-            while (!seekSequence.isEmpty() && i != seekSequence.get(0) + move) {
-                currentFloor = i;
-                System.out.println(id + " jest na: " + currentFloor);
-                System.out.println(direction);
-                try {
-                    Thread.sleep(800);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            if(destinationFloors.size() <= 2){
+                if(!destinationFloors.isEmpty()){
+                    System.out.println(destinationFloors.size());
                 }
-                if (!destinationFloors.isEmpty()) {
-                    // Recompute seek sequence and continue looping
-                    if (destinationFloors.contains(currentFloor)) {
-                        destinationFloors.remove(destinationFloors.indexOf(currentFloor));
-                        seekSequence.remove(seekSequence.indexOf(currentFloor));
-                        System.out.println("obecnie na pietrze: " + currentFloor);
-                        // System.out.println("w seek sequence[0]: " + seekSequence.get(0));
-                        if (!seekSequence.isEmpty() && seekSequence.get(0) > currentFloor) {
-                            direction = DirectionsEnum.UP;
-                        } else {
-                            direction = DirectionsEnum.DOWN;
-                        }
+                if (destinationFloors.contains(currentFloor)) {
+                    destinationFloors.remove(currentFloor);
+                    continue;
+                }
+                if (destinationFloors.isEmpty()) {
+                    continue;
+                }
+    
+                if (destinationFloors.get(0) > currentFloor) {
+                    direction = DirectionsEnum.UP;
+                    move = 1;
+                } else if (destinationFloors.get(0) < currentFloor) {
+                    direction = DirectionsEnum.DOWN;
+                    move = -1;
+                }
+                else{
+                    direction = DirectionsEnum.NULL;
+                }
+                int i = currentFloor;
+
+                while (!destinationFloors.isEmpty() && direction != DirectionsEnum.NULL && i != destinationFloors.get(0) + move) {
+                    currentFloor = i;
+                    try {
+                        Thread.sleep(1000);
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    seekSequence = this.elevatorsAlgoritm(destinationFloors, currentFloor, direction);
+
+                    System.out.println("out: " + destinationFloors);
+                    if(destinationFloors.isEmpty() && nextFloor != currentFloor){
+                        destinationFloors.add(nextFloor);
+                        System.out.println("in: " + destinationFloors);
+                    }
+                    //seekSequence = destinationFloors;
+                    if (!destinationFloors.isEmpty() && destinationFloors.get(0) > currentFloor) {
+                        direction = DirectionsEnum.UP;
+                        move = 1;
+                    } else if (!destinationFloors.isEmpty() && destinationFloors.get(0) < currentFloor) {
+                        direction = DirectionsEnum.DOWN;
+                        move = -1;
+                    }
+                    else{
+                        direction = DirectionsEnum.NULL;
+                    }
+                    if(direction == DirectionsEnum.NULL){
+                        break;
+                    }
+                    i += move;
                 }
-                // elevator.setDestinationFloors(seekSequence);
-                move = direction == DirectionsEnum.UP ? 1 : -1;
-                i += move;
+                direction = DirectionsEnum.NULL;
+                System.out.println("DF: " + destinationFloors);
+                System.out.println("obecne pietor: " + currentFloor);
+                System.out.println("next choice: " + nextFloor);
+            // if(destinationFloors.contains(currentFloor) && )
+                if(destinationFloors.contains(currentFloor)){
+                    List<Integer> temp = new ArrayList<>();
+                    temp.add(currentFloor);
+                    destinationFloors.removeAll(temp);
+                    System.out.println("krwawie");
+                    if(nextFloor != currentFloor){
+                        destinationFloors.add(nextFloor);
+                    }
+                }
+            }else{
+               destinationFloors = elevatorsAlgoritm(destinationFloors, currentFloor, direction);
             }
-            direction = DirectionsEnum.WAITING;
-            System.out.println("winda czeka na sygnal gdzie dalej i jest " + direction);
-            try{
-                Thread.sleep(3500);
-            }catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Still: " + direction);
-            direction = DirectionsEnum.NULL;
-            System.out.println("po dojechaniu: " + seekSequence);
         }
-        System.out.println("wyszla z petli");
     }
 
     private List<Integer> elevatorsAlgoritm(List<Integer> destinationFloorsList, int currentFloor, DirectionsEnum direction) {
@@ -118,14 +123,12 @@ public class Elevator implements Runnable {
         Collections.sort(down);
         Collections.sort(up);
 
-        // napisac wybor czy ma najpierw zaczac poruszac sie w prawo czy w lewo
         int run = 2;
         while (run-- > 0) {
             if (direction == DirectionsEnum.DOWN) {
                 for (int i = down.size() - 1; i >= 0; i--) {
                     nowOnFloor = down.get(i);
 
-                    // do pozniejszego wypisywania
                     seekSequence.add(nowOnFloor);
 
                     currentFloor = nowOnFloor;
@@ -141,7 +144,6 @@ public class Elevator implements Runnable {
                 direction = DirectionsEnum.DOWN;
             }
         }
-        System.out.println("seekSequence" + seekSequence);
         return seekSequence;
     }
 

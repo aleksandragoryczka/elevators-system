@@ -38,18 +38,9 @@ public class ElevatorController {
     }
 
     @PostMapping("/callElevator")
-    public void callElevator(@RequestParam int floor) {
-        elevatorService.callElevator(floor);
+    public void callElevator(@RequestParam int[] floors) {
+        elevatorService.callElevator(floors);
     }
-    
-/*
-    @PostMapping("/callElevator")
-    public void chooseFloorToGo(@RequestParam int endFloor) {
-        elevatorService.callElevator();
-    }*/
-
-
-
 
     @PutMapping("/{id}")
     public void updateElevatorState(@PathVariable int id, @RequestBody Elevator elevator) {

@@ -14,10 +14,10 @@ const BASE_URL = environment.apiUrl + '/elevators';
   styleUrls: ['./elevators.component.scss'],
 })
 export class ElevatorsComponent implements OnInit {
-  elevators: Elevator[] = []; //TODO: to be changed to Elevator model
+  elevators: Elevator[] = [];
   refreshData$: Subject<void> = new Subject<void>();
   DirectionsEnum = DirectionsEnum;
-  floorsArray: number[] = []; //= Array.from(Array(this.inputList[1]).keys());
+  floorsArray: number[] = [];
   elevatorsNumber: number = 1;
 
   selectedFloors: number[] = [0, 0];
@@ -46,39 +46,23 @@ export class ElevatorsComponent implements OnInit {
     }, 800);
   }
 
-  callElevator(floor: number): void {
+  callElevator(floors: number[]): void {
     this.http
-      .post(`${BASE_URL}/callElevator?floor=${floor}`, null)
+      .post(`${BASE_URL}/callElevator?floors=${floors}`, null)
       .subscribe(() => this.refreshData$.next());
-    //this.updateElevatorState(elevatorId, floor);
-    //console.log(this.getElevatorStatus());
   }
 
   submitChosenFloors(): void {
     console.log("cos");
   }
 
-
-/*
-  callElevator(elevatorId: number, floor: number): void {
-    this.http
-      .post(`${BASE_URL}/${elevatorId}/callElevator?floor=${floor}`, null)
-      .subscribe(() => this.refreshData$.next());
-    //this.updateElevatorState(elevatorId, floor);
-    //console.log(this.getElevatorStatus());
-  }*/
-
   updateElevatorState(
     elevatorId: number,
-    //currentFloor: number,
     destinationFloor: number
-    //isMovingUp: boolean
   ): void {
     this.http
       .put(`${BASE_URL}/${elevatorId}`, {
-        // currentFloor: currentFloor,
         destinationFloor: destinationFloor,
-        // isMovingUp: isMovingUp,
       })
       .subscribe();
   }
@@ -94,10 +78,4 @@ export class ElevatorsComponent implements OnInit {
       this.elevators = data;
     });
   }
-
-  options = [
-    {label: '1', value: 1}
-  ]
-
-
 }

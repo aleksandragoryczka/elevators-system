@@ -8,7 +8,7 @@ public interface ElevatorService {
 
     Elevator getElevatorById(int id);
 
-    void callElevator(int floor);
+    void callElevator(int[] floors);
 
     public void updateElevatorState(int elevatorId, int currentFloor, List<Integer> destinationFloor, DirectionsEnum direction);
 
